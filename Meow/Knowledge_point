@@ -1,0 +1,8 @@
+The target over telnet can login by root with "blank" password
+
+process command:
+telnet target_ip
+login: root  (Account)
+password:    (blank)
+
+---------success login-----------    
