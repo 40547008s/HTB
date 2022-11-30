@@ -1,0 +1,11 @@
+SMB Knowledge
+SMB is Server Message Block also calls CIFS Common Internet File System.
+SMB use port 445
+
+Use command :
+
+smbclient -L service_ip                   #To show the directories of smb 
+
+smbclient \\\\service_ip\\directory_name  #Connect to the smb (similar to ftp)
+
+
