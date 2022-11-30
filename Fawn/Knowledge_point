@@ -1,0 +1,11 @@
+FTP Knowledge
+FTP port 21(command transfer) or 20(file transfer)
+FTP is plaintext transfer
+SFTP is secure FTP
+
+Use nmap to scan the target:
+
+nmap -v -A -p 21 target_ip
+
+Login ftp by anonymous with "blank" password
+
