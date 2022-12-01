@@ -1,0 +1,17 @@
+Quick Scan Ports & Redis database
+
+Quick Scan Ports command :
+	nmap -p --min-rate 5000 -scanflags "SYN" target_ip
+flag -p-          #scan all ports of target_ip
+     --min-rate   #set the scanning rate (5000 package in a second)
+     -scanflags   #specify the TCP flag: URG ACK PSH RST SYN FIN
+
+Redis is a in-memory database (quick I/O is its adventage).
+
+command : redis-cli -h  #connect to redis database -h (host or sever)
+
+	  INFO          #show the Redis server information
+
+	  select <n>    #change the database in Redis
+
+	  keys *        #To show all the keys in a database
