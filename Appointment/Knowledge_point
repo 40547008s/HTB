@@ -1,0 +1,20 @@
+Injection Attack
+
+SQL : Structed Query Language
+Most common type of SQL vulnerabilities is SQL Injection
+
+PII : Personally identifiable information
+
+SQL Injection is the category of A03:2021-Injection
+
+scan the target : nmap -v -A -p 80 target_ip
+
+web-application folder is called directory.
+
+use web-browser to link the target web.
+
+use Injection Attack to login
+	
+	account : admin' or 1=1;#
+	password: admin' or 1=1;#
+
