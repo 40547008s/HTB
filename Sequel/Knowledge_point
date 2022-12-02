@@ -1,0 +1,12 @@
+MariaDB (community-developed MySQL) its Icon is seal
+
+it use the 3306 port by default
+
+link command : mysql -h target_ip -u user_account  # root is default account with "blank" password.
+
+first see the databases in the server: show databases;
+second choose the target database    : use target_DB;
+tird show the tables in the database : show tables;
+final to show the all data in table  : select * from target_TB;
+
+
