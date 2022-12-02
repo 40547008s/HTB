@@ -1,0 +1,12 @@
+Nmap -flag && Ftp && Wappalyzer
+
+nmap default scripts flag : -sC
+
+web site analysis plug-in in browser: Wappalyzer
+
+gobuster dir -u http://target_ip -w /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt -x wanted_file(ex: .php .html)
+
+flag -u target_url
+     -w choose_directory_name use to scan the target with the keyword in directory.
+     -x the_file you want to explore
+
