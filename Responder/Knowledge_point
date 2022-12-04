@@ -1,0 +1,22 @@
+Web application vulnerability of NTLM
+
+use scan command : sudo nmap -sS -sV target_ip -p- --min-rate 5000 -vv
+
+use the brower to link the target_ip than it will redirected to another url
+
+if we can`t see the web, it represent that it wasn`t found in DNS, so we need to add it by manual edit file (pwd: /ect/hosts) with target_ip hostname
+
+when you change the language of the web, it will use .php to generate webpage.
+
+web use "page" to load different variable. #it could be a vulnerability!!
+
+you can use "page=variable" to explore server file (LFI vulnerability)!
+
+also you can use it to get the sever info by send request to remote host (RFI)!
+
+NTLM : New Technology LAN Manager
+
+use Responder tool command : responder -I tun0 #To listen the NIC message
+use john the ripper tool   : john NTLM_hash
+use evil-winrm to connect  : evil-winrm -i target_ip -u Account -p password
+Last surf the server to explore the flag!!
