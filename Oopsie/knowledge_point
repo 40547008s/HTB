@@ -1,0 +1,27 @@
+Use BurpSuite for proxy server to explore web detail and change cookie
+
+First Enumeration
+nmap scan the web:
+nmap -sC -sV target_ip
+than find port 22(SSH), 80(HTTP) is open
+then use Burp Suite proxy to passively spider the website!
+
+#hint use burpsuite need to set up something
+1. Project options -> Misc -> Burp's Browser
+2. check "Allow Burp's browser to run without a sanbox."
+3. check "Stop Burp's browser using the GPU."(option)
+
+After set up the burpsuite, go to proxy and open the browser
+Using the browser to visit the target_IP, and then switch to the Target tab of the burpsuite project.
+It can spot some directories and files that weren't visible while browsing.
+
+and we can find the directory of /cdn-cgi/login
+we can visit it with appending them on the url.
+As we have no valid credentials to get login access. However, there is also an option to log in as a Guest.
+we can logged in as guests at first.
+After we login we can find some new option and there would be more vulnerabilities.
+Now, we need to find a way to escalate our privileges from Guest to super admin role.
+One way to try this is by checking if cookies and sessions can be manipulated.
+We can refresh the Accounts page, which displays the user id for our current user and intercepts the requset.
+In order to enter the Developer Tools panel, we need to right-click int the content of the webpage and select the Inspect Element(Q).
+Then we can navigate to the Storage section where Cookies are being presented.
