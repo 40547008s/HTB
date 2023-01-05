@@ -1,6 +1,6 @@
 Use BurpSuite for proxy server to explore web detail and change cookie
 
-First Enumeration
+First : Enumeration
 nmap scan the web:
 nmap -sC -sV target_ip
 than find port 22(SSH), 80(HTTP) is open
@@ -25,3 +25,33 @@ One way to try this is by checking if cookies and sessions can be manipulated.
 We can refresh the Accounts page, which displays the user id for our current user and intercepts the requset.
 In order to enter the Developer Tools panel, we need to right-click int the content of the webpage and select the Inspect Element(Q).
 Then we can navigate to the Storage section where Cookies are being presented.
+After tring to change the account id (from 1 to 100),we know the admin account.
+then use the admin to revisit the Uploads page, and submit a reverse shell program(reverse.php)
+Before upload it, remember to change the right ip and port of the program.
+and the gobuster the web, there will be a "uploads" directoy.
+Before you exe the file, you need to open the listen port.
+command: nc -lvnp <port>
+use the admin to access the file you upload (Target_web/uploads/file).
+
+Second : Upgrade the shell
+
+Inorder to have a functional shell though we can issue a python3 TTY cheat sheet.
+command: python3 -c 'import pty; pty.spawn("bin/bash")'
+
+and then we can surf the target and find a legal account and password to link in the machine with ssh!
+
+you can use the command: cat /etc/passwd
+and you can also to explore the Web with the directoy "www".
+If you find the account and password successfully, you can use the command to login.
+command: su account
+and then key in password
+
+Third : Privilege Escalation
+use the following command to try the sudo privilege
+command : sudo -l
+or command : id
+useful command to find a file and check its privileges and type
+command: locate filename (show the path of it)
+command: ls -la path_to_file/filename (show its privileges)
+command: file path_to_file/filename (show its type)
+
